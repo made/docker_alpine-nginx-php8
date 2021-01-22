@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# ToDo: provide the ability to pass cli options to composer for full flexibility later
+
+if test "$APP_ENV"; then environment=$APP_ENV; else environment=prod; fi
+
+if [ "$environment" = "prod" ] || [ "$environment" = "production" ]; then
+  sudo -u nginx npm install --only=production
+  sudo -u nginx npm prune --only=production
+else
+  sudo -u nginx npm install
+fi

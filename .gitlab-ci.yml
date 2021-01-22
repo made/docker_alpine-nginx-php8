@@ -1,0 +1,42 @@
+stages:
+  - build
+  - build_and_release
+
+variables:
+  IMAGE_TEST_TAG: $CI_REGISTRY_IMAGE:dev-$CI_COMMIT_SHORT_SHA
+  IMAGE_RELEASE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+  IMAGE_RELEASE_TAG_LATEST: $CI_REGISTRY_IMAGE:latest
+
+before_script:
+  - docker login -u $REGISTRY_USER -p $REGISTRY_TOKEN $REGISTRY_URL
+
+build_image:
+  # This is an older version, because the current one still has some issues.
+  # @see https://gitlab.com/gitlab-org/gitlab-foss/-/issues/65511
+  image: docker:19.03.0
+  stage: build
+  services:
+    - docker:19.03.0-dind
+  except:
+    - tags
+  only:
+    - master
+  script:
+    - docker build -t $IMAGE_TEST_TAG .
+    - docker push $IMAGE_TEST_TAG
+    - docker build -t $IMAGE_RELEASE_TAG_LATEST .
+    - docker push $IMAGE_RELEASE_TAG_LATEST
+
+build_and_release:
+  # This is an older version, because the current one still has some issues.
+  # @see https://gitlab.com/gitlab-org/gitlab-foss/-/issues/65511
+  image: docker:19.03.0
+  stage: build_and_release
+  services:
+    - docker:19.03.0-dind
+  only:
+    - tags
+  script:
+    - docker login -u $REGISTRY_USER -p $REGISTRY_TOKEN $REGISTRY_URL
+    - docker build -t $IMAGE_RELEASE_TAG .
+    - docker push $IMAGE_RELEASE_TAG

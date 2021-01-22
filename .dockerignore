@@ -1,0 +1,14 @@
+# Standard files
+.git
+.cache
+*.MD
+.DS_Store       # Mac finder metadata
+.thumbsdb
+builds/
+
+# Node specific
+*/node_modules*
+npm-debug.log
+
+# PHP specific
+*/vendor*

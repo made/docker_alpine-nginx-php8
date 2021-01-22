@@ -1,0 +1,7 @@
+#!/bin/sh
+
+sudo npm install -g gulp
+
+if test "$1"; then gulp_command=$1; else gulp_command='default'; fi
+
+sudo -u nginx gulp "$gulp_command"

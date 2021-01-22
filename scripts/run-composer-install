@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# ToDo: Test necessary variables here and give an exit code with message if not set correctly.
+# this can also solve problems when executing in the cli and something has gone wrong
+# test $DOCUMENT_ROOT &&
+# test $APP_ENV &&
+# ToDo: also provide the ability to pass cli options to composer for full flexibility
+
+# first check if composer should be run
+if [ "$APP_ENV" = "prod" ]; then
+  sudo -u nginx APP_ENV="$APP_ENV" composer install --no-ansi --no-dev --no-interaction --no-suggest --optimize-autoloader
+else
+  sudo -u nginx APP_ENV="$APP_ENV" composer install --no-interaction
+fi

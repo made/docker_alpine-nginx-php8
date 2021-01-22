@@ -1,0 +1,3 @@
+#!/bin/sh
+
+test -n $PROJECT_ROOT && chown -v nginx:nginx -R $PROJECT_ROOT

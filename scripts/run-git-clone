@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if test "$1"; then
+  sudo -u nginx git clone "$1" .
+else
+  echo "Please define a repository url here."
+  return 1
+fi
