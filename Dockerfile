@@ -2,17 +2,19 @@ FROM php:8.0.1-fpm-alpine3.13
 
 LABEL maintainer="Made Team <contact@made.dev>"
 
-# Default ENV variables. These can be overridden by passing ENV when running the container.
-ENV COMPOSER_VERSION '2.0.8-r0'
-ENV NGINX_VERSION '1.18.0-r13'
-ENV NPM_VERSION '14.15.4-r0'
-ENV APP_ENV prod
-ENV APP_DEBUG false
-ENV LOG_LEVEL warn
-ENV PROJECT_ROOT '/var/www/html'
-ENV DOCUMENT_ROOT '/var/www/html'
-ENV USER 'nginx'
-ENV PATH "/var/scripts:${PATH}"
+# Build arguments which are only needed during the build of this base image (BUILD).
+ARG COMPOSER_VERSION='2.0.8-r0'
+ARG NGINX_VERSION='1.18.0-r13'
+ARG NPM_VERSION='14.15.4-r0'
+ARG USER='nginx'
+
+# Default ENV variables. These can be overridden by passing ENV when running the container (RUN).
+ENV APP_ENV=prod \
+    APP_DEBUG=false \
+    LOG_LEVEL=warn \
+    PROJECT_ROOT='/var/www/html' \
+    DOCUMENT_ROOT='/var/www/html' \
+    PATH="$PATH:/var/scripts"
 
 RUN apk update && apk --no-cache add \
     composer=${COMPOSER_VERSION} \
@@ -26,15 +28,15 @@ RUN apk update && apk --no-cache add \
 
 # Copy over the configuration files
 COPY ./scripts /var/scripts
-COPY ./config/php/ $PHP_INI_DIR/conf.d/
+COPY ./config/php/php-docker.ini $PHP_INI_DIR/conf.d/php-docker.ini
 COPY ./config/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY ./config/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN mkdir -p /run/nginx \
-    && chown -R nginx:nginx /run/nginx \
+    && chown -R $USER:$USER /run/nginx \
     && chmod -R a+x /var/scripts \
     && mkdir -p $PROJECT_ROOT \
-       mkdir -p /var/cache/nginx
+    && mkdir -p /var/cache/nginx
 
 # Make sure files/folders needed by the processes are accessable when they run under the nginx user
 RUN chown -R nginx:nginx $PROJECT_ROOT && \
@@ -59,4 +61,4 @@ WORKDIR ${PROJECT_ROOT}
 EXPOSE 8000
 
 # Startup script
-CMD [ "/var/scripts/startup.sh" ]
+CMD [ "startup" ]
