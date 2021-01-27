@@ -27,15 +27,15 @@ jobs:
         name: Login to DockerHub
         uses: docker/login-action@v1
         with:
-          registry: ghcr.io 
-          username: made-lab
+          registry: ${{ secrets.REGISTRY_URL }}
+          username: ${{ secrets.REGISTRY_USER }}
           password: ${{ secrets.REGISTRY_TOKEN }}
       -
         name: Build and push
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ghcr.io/made/alpine-nginx-php8:latest
+          tags: ghcr.io/made/docker-image_alpine-nginx-php8/alpine-nginx-php8:latest
           
           
           # add another build if the above finally works with the tag here ${{ github.event.release.tag_name }}
