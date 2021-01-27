@@ -35,4 +35,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: made/alpine-nginx-php8:latest
+          tags: ghcr.io/made/alpine-nginx-php8:latest
+          
+          
+          # add another build if the above finally works with the tag here ${{ github.event.release.tag_name }}
