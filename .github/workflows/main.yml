@@ -1,0 +1,48 @@
+name: Build images for registry
+
+on:
+  release:
+    types: [published]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+
+  push_to_registry:
+    name: Pushing docker images to the GitHub Registry
+    runs-on: docker:19.03.0-dind
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Push release image
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          repository: ${{ github.repository }}/alpine-nginx-php8
+          tag_with_ref: true
+
+      - name: Push latest image
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          repository: ${{ github.repository }}/alpine-nginx-php8
+          tags: alpine-nginx-php8:latest
+
+      - name: Push release image with dev tools
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          context: ./with-xdebug
+          file: ./with-xdebug/Dockerfile
+          repository: ${{ github.repository }}/alpine-nginx-php8
+          tags: alpine-nginx-php8:${{ github.ref }}-dev
