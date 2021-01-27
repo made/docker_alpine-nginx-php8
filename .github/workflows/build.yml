@@ -9,16 +9,13 @@ on:
 
 jobs:
 
-  push_to_registry:
-    name: Pushing docker images to the GitHub Registry
-    runs-on: docker:19.03.0-dind
+  build:
+    name: Building and pushing docker images to the GitHub Registry
+    runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
-      - name: Push release image
+      - name: Build and push image for release
         uses: docker/build-push-action@v1
         with:
           username: ${{ github.actor }}
@@ -27,7 +24,7 @@ jobs:
           repository: ${{ github.repository }}/alpine-nginx-php8
           tag_with_ref: true
 
-      - name: Push latest image
+      - name: Build and push image for latest
         uses: docker/build-push-action@v1
         with:
           username: ${{ github.actor }}
@@ -36,7 +33,7 @@ jobs:
           repository: ${{ github.repository }}/alpine-nginx-php8
           tags: alpine-nginx-php8:latest
 
-      - name: Push release image with dev tools
+      - name: Build and push image for release containing dev tools
         uses: docker/build-push-action@v1
         with:
           username: ${{ github.actor }}
