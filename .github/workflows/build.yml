@@ -35,4 +35,4 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: alpine-nginx-php8:latest
+          tags: made/alpine-nginx-php8:latest
