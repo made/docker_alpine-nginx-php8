@@ -7,16 +7,16 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  validate:
     runs-on: ubuntu-latest
     steps:
       -
         name: Validate root Dockerfile
         uses: brpaz/hadolint-action@v1.2.1
         with:
-          dockerfile: ./Dockerfile
+          dockerfile: Dockerfile
       -
         name: Validate dev Dockerfile
         uses: brpaz/hadolint-action@v1.2.1
         with:
-          dockerfile: ./with-xdebug/Dockerfile
+          dockerfile: with-xdebug/Dockerfile
