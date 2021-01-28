@@ -1,0 +1,22 @@
+name: Validate and security check Dockerfile
+
+on:
+  pull_request:
+    branches: [ master ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Validate root Dockerfile
+        uses: brpaz/hadolint-action@v1.2.1
+        with:
+          dockerfile: ./Dockerfile
+      -
+        name: Validate dev Dockerfile
+        uses: brpaz/hadolint-action@v1.2.1
+        with:
+          dockerfile: ./with-xdebug/Dockerfile

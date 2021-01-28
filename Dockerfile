@@ -3,9 +3,13 @@ FROM php:8.0.1-fpm-alpine3.13
 LABEL maintainer="Made Team <contact@made.dev>"
 
 # Build arguments which are only needed during the build of this base image (BUILD).
+# Can be overriden by passing them as --build-args
 ARG COMPOSER_VERSION='2.0.8-r0'
 ARG NGINX_VERSION='1.18.0-r13'
 ARG NPM_VERSION='14.15.4-r0'
+ARG SUPERVISOR_VERSION='4.2.1-r0'
+ARG SUDO_VERSION='1.9.5p2-r0'
+
 ARG USER='nginx'
 
 # Default ENV variables. These can be overridden by passing ENV when running the container (RUN).
@@ -20,8 +24,8 @@ RUN apk update && apk --no-cache add \
     composer=${COMPOSER_VERSION} \
     nginx=${NGINX_VERSION} \
     npm=${NPM_VERSION} \
-    supervisor \
-    sudo
+    supervisor=${SUPERVISOR_VERSION} \
+    sudo=${SUDO_VERSION}
 
     # To install php extensions use -> docker-php-ext-install
     # @see https://github.com/mlocati/docker-php-extension-installer
