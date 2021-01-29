@@ -8,7 +8,6 @@ ARG COMPOSER_VERSION='2.0.8-r0'
 ARG NGINX_VERSION='1.18.0-r13'
 ARG NPM_VERSION='14.15.4-r0'
 ARG SUPERVISOR_VERSION='4.2.1-r0'
-ARG SUDO_VERSION='1.9.5p2-r0'
 
 ARG USER='nginx'
 
@@ -24,8 +23,7 @@ RUN apk update && apk --no-cache add \
     composer=${COMPOSER_VERSION} \
     nginx=${NGINX_VERSION} \
     npm=${NPM_VERSION} \
-    supervisor=${SUPERVISOR_VERSION} \
-    sudo=${SUDO_VERSION}
+    supervisor=${SUPERVISOR_VERSION}
 
     # To install php extensions use -> docker-php-ext-install
     # @see https://github.com/mlocati/docker-php-extension-installer
@@ -51,9 +49,7 @@ RUN chown -R nginx:nginx $PROJECT_ROOT && \
   touch /run/nginx.pid && \
   touch /run/supervisord.pid && \
   chown nginx:nginx /run/nginx.pid && \
-  chown nginx:nginx /run/supervisord.pid && \
-  echo "$USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$USER && \
-  chmod 0440 /etc/sudoers.d/$USER
+  chown nginx:nginx /run/supervisord.pid
 
 USER $USER
 
