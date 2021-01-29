@@ -1,6 +1,6 @@
 FROM registry.gitlab.com/made-dev/docker-images/alpine-nginx-php8:latest
 
-LABEL org.opencontainers.image.source="https://github.com/made/docker_alpine-node"
+LABEL org.opencontainers.image.source="https://github.com/made/docker_alpine-nginx-php8"
 
 ARG XDEBUG_VERSION='3.0.2'
 
