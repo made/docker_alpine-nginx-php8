@@ -1,6 +1,7 @@
 FROM php:8.0.1-fpm-alpine3.13
 
 LABEL maintainer="Made Team <contact@made.dev>"
+LABEL org.opencontainers.image.source="https://github.com/made/docker_alpine-node"
 
 # Build arguments which are only needed during the build of this base image (BUILD).
 # Can be overriden by passing them as --build-args

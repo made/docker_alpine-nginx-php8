@@ -34,19 +34,19 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ${{ secrets.REGISTRY_URL }}/${{ github.repository }}/alpine-nginx-php8:latest
+          tags: ${{ secrets.REGISTRY_URL }}/made/alpine-nginx-php8:latest
       -
         name: Build and Push - release
         if: ${{ github.event.release.tag_name }}
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ${{ secrets.REGISTRY_URL }}/${{ github.repository }}/alpine-nginx-php8:${{ github.event.release.tag_name }}
+          tags: ${{ secrets.REGISTRY_URL }}/made/alpine-nginx-php8:${{ github.event.release.tag_name }}
       -
         name: Build and Push - dev image
         if: ${{ github.event.release.tag_name }}
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ${{ secrets.REGISTRY_URL }}/${{ github.repository }}/alpine-nginx-php8:${{ github.event.release.tag_name }}-dev
+          tags: ${{ secrets.REGISTRY_URL }}/made/alpine-nginx-php8:${{ github.event.release.tag_name }}-dev
 
