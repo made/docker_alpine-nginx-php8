@@ -4,12 +4,10 @@ LABEL maintainer="Made Team <contact@made.dev>"
 
 # Build arguments which are only needed during the build of this base image (BUILD).
 # Can be overriden by passing them as --build-args
-ARG COMPOSER_VERSION='2.0.8-r0'
+ARG COMPOSER_VERSION='2.0.9-r0'
 ARG NGINX_VERSION='1.18.0-r13'
 ARG NPM_VERSION='14.15.4-r0'
 ARG SUPERVISOR_VERSION='4.2.1-r0'
-
-ARG USER='nginx'
 
 # Default ENV variables. These can be overridden by passing ENV when running the container (RUN).
 ENV APP_ENV=prod \
@@ -30,12 +28,13 @@ RUN apk update && apk --no-cache add \
 
 # Copy over the configuration files
 COPY ./scripts /var/scripts
+
 COPY ./config/php/php-docker.ini $PHP_INI_DIR/conf.d/php-docker.ini
 COPY ./config/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY ./config/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN mkdir -p /run/nginx \
-    && chown -R $USER:$USER /run/nginx \
+    && chown -R nginx:nginx /run/nginx \
     && chmod -R a+x /var/scripts \
     && mkdir -p $PROJECT_ROOT \
     && mkdir -p /var/cache/nginx
@@ -51,7 +50,7 @@ RUN chown -R nginx:nginx $PROJECT_ROOT && \
   chown nginx:nginx /run/nginx.pid && \
   chown nginx:nginx /run/supervisord.pid
 
-USER $USER
+USER nginx
 
 # Preparing the environment
 WORKDIR ${PROJECT_ROOT}
