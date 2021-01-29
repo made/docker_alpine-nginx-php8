@@ -12,7 +12,7 @@ if [ -n "$PHP_MEMORY_LIMIT" ];then
   fi
 fi
 
-# If the ENV DOCUMENT_ROOT has been set, then it should be overriden in the nginx config.
+# If the ENV DOCUMENT_ROOT has been set, then it should be overridden in the nginx config.
 if [ -n "$DOCUMENT_ROOT" ]; then
   REPLACE="$(echo "$DOCUMENT_ROOT" | sed 's/\//\\\//g')"
   sudo sed -i "s/\/var\/www\/html[^\"]*/$REPLACE;/g" /etc/nginx/nginx.conf

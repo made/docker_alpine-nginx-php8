@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/made-dev/docker-images/alpine-nginx-php8:0.1.1
+FROM registry.gitlab.com/made-dev/docker-images/alpine-nginx-php8:latest
 
 ARG XDEBUG_VERSION='3.0.2'
 
