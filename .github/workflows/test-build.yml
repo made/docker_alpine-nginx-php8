@@ -1,4 +1,4 @@
-name: Build images for registry
+name: Build images
 
 on:
   pull_request:
