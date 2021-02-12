@@ -7,7 +7,6 @@ LABEL org.opencontainers.image.source="https://github.com/made/docker_alpine-ngi
 # Can be overriden by passing them as --build-args
 ARG COMPOSER_VERSION='2.0.9-r0'
 ARG NGINX_VERSION='1.18.0-r13'
-ARG NPM_VERSION='14.15.4-r0'
 ARG SUPERVISOR_VERSION='4.2.1-r0'
 ARG SUDO_VERSION='1.9.5p2-r0'
 
@@ -16,45 +15,42 @@ ENV APP_ENV=prod \
     APP_DEBUG=false \
     LOG_LEVEL=warn \
     PROJECT_ROOT='/var/www/html' \
-    DOCUMENT_ROOT='/var/www/html' \
-    PATH="$PATH:/var/scripts"
+    DOCUMENT_ROOT='/var/www/html'
+
 
 RUN apk update && apk --no-cache add \
     composer=${COMPOSER_VERSION} \
     nginx=${NGINX_VERSION} \
-    npm=${NPM_VERSION} \
     supervisor=${SUPERVISOR_VERSION} \
     sudo=${SUDO_VERSION}
 
     # To install php extensions use -> docker-php-ext-install
     # @see https://github.com/mlocati/docker-php-extension-installer
 
-# Copy over the configuration files
-COPY ./scripts /var/scripts
-
+# Copy necessary files
+COPY ./scripts /usr/local/bin
 COPY ./config/php/php-docker.ini $PHP_INI_DIR/conf.d/php-docker.ini
 COPY ./config/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY ./config/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN mkdir -p /run/nginx \
     && chown -R nginx:nginx /run/nginx \
-    && chmod -R a+x /var/scripts \
+    && chmod -R a+x /usr/local/bin \
     && mkdir -p $PROJECT_ROOT \
-    && mkdir -p /var/cache/nginx
+    && mkdir -p /var/cache/nginx \
+    && chown -R nginx:nginx $PROJECT_ROOT \
+    && chown -R nginx:nginx /var/lib/nginx \
+    && chown -R nginx:nginx /var/cache/nginx \
+    && chown -R nginx:nginx /var/log/nginx \
+    && chown -R nginx:nginx /etc/nginx/ \
+    && touch /run/nginx.pid \
+    && touch /run/supervisord.pid \
+    && chown nginx:nginx /run/nginx.pid \
+    && chown nginx:nginx /run/supervisord.pid \
+    && echo "nginx ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/nginx \
+    && chmod 0440 /etc/sudoers.d/nginx
 
-# Make sure files/folders needed by the processes are accessable when they run under the nginx user
-RUN chown -R nginx:nginx $PROJECT_ROOT && \
-    chown -R nginx:nginx /var/lib/nginx && \
-    chown -R nginx:nginx /var/cache/nginx && \
-    chown -R nginx:nginx /var/log/nginx && \
-    chown -R nginx:nginx /etc/nginx/ && \
-    touch /run/nginx.pid && \
-    touch /run/supervisord.pid && \
-    chown nginx:nginx /run/nginx.pid && \
-    chown nginx:nginx /run/supervisord.pid && \
-    echo "nginx ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/nginx && \
-    chmod 0440 /etc/sudoers.d/nginx
-
+# Switch to the user nginx
 USER nginx
 
 # Preparing the environment

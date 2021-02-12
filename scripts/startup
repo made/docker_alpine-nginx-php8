@@ -1,4 +1,5 @@
 #!/bin/sh
+echo "Startup script initializing."
 
 # PHP Memory limit settings
 if [ -n "$PHP_MEMORY_LIMIT" ];then
@@ -7,6 +8,7 @@ if [ -n "$PHP_MEMORY_LIMIT" ];then
   result=$(sudo grep "^[^#;]"  "$PHP_INI_DIR"/conf.d/php-docker.ini | grep -c memory_limit)
   if [ "$result" -gt "0" ]; then
     sudo sed -i "s/^memory_limit.*/memory_limit=$PHP_MEMORY_LIMIT/g" "$PHP_INI_DIR"/conf.d/php-docker.ini
+    echo "PHP Memory Limit set to $PHP_MEMORY_LIMIT"
   else
     echo "memory_limit=$PHP_MEMORY_LIMIT" | sudo tee -a "$PHP_INI_DIR"/conf.d/php-docker.ini > /dev/null
   fi
@@ -16,16 +18,14 @@ fi
 if [ -n "$DOCUMENT_ROOT" ]; then
   REPLACE="$(echo "$DOCUMENT_ROOT" | sed 's/\//\\\//g')"
   sudo sed -i "s/\/var\/www\/html[^\"]*/$REPLACE;/g" /etc/nginx/nginx.conf
+  echo "Document Root changed to $DOCUMENT_ROOT"
 fi
 
-# Fix the owner group/user of the PROJECT_ROOT
-sudo chown -R www-data:www-data $PROJECT_ROOT
-
 # Some helpful information while starting the container
-test "$DOCUMENT_ROOT" && echo "Document root set to '$DOCUMENT_ROOT'"
-test "$APP_ENV" && echo "Application environment set to '$APP_ENV'"
-test "$APP_DEBUG" && echo "Application Debug set to '$APP_DEBUG'"
-test "$LOG_LEVEL" && echo "Application logging level set to '$LOG_LEVEL'"
+test "$DOCUMENT_ROOT" && echo "Document root -> '$DOCUMENT_ROOT'"
+test "$APP_ENV" && echo "Application environment -> '$APP_ENV'"
+test "$APP_DEBUG" && echo "Application Debug -> '$APP_DEBUG'"
+test "$LOG_LEVEL" && echo "Application logging level -> '$LOG_LEVEL'"
 
 # Now run supervisor
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
