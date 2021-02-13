@@ -29,7 +29,8 @@ RUN apk update && apk --no-cache add \
 
 # Copy necessary files
 COPY ./scripts /usr/local/bin
-COPY ./config/php/php-docker.ini $PHP_INI_DIR/conf.d/php-docker.ini
+COPY ./config/php/ $PHP_INI_DIR/conf.d/
+COPY ./config/php-fpm/ /usr/local/etc/php-fpm.d
 COPY ./config/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY ./config/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
