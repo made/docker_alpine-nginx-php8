@@ -21,7 +21,7 @@ RUN apk --no-cache add \
     && pecl install xdebug-${XDEBUG_VERSION} \
     && docker-php-ext-enable xdebug
 
-COPY ./config/xdebug.ini ${PHP_INI_DIR}/conf.d/xdebug.ini
+COPY ./with-xdebug/config/xdebug.ini ${PHP_INI_DIR}/conf.d/xdebug.ini
 
 USER nginx
 
